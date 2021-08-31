@@ -1,4 +1,4 @@
-const uuid = require('uuid');
+const uuid = require('../helpers/uuid');
 
 const router = require('express').Router();
 const { readFromFile, writeToFile, readAndAppend } = require('../Helpers/fsUtils');
@@ -22,7 +22,7 @@ router.post('/notes', (req, res) => {
         //adding the note to the jsonfile
         readAndAppend(newNote, './db/db.json');
 
-        res.json(response);
+        res.json('It woked, the note was added');
     } else {
         res.json('Error: Note did not post');
     }
