@@ -1,28 +1,26 @@
-const { v4: uuid4 } = require('uuid');
-const fs = require('fs');
+const uuid = require('uuid');
+
 const router = require('express').Router();
 const { readFromFile, writeToFile, readAndAppend } = require('../Helpers/fsUtils');
 
-router.get('/', (req, res) => 
-    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)))
-);
+//Route to get all notes
+router.get('/notes', (req, res) => {
+    readFromFile('./db/db.json').then((data) => res.json(JSON.parse(data)));
+});
 
-router.post('/', (req, res) => {
+//Route for posting the new notes
+router.post('/notes', (req, res) => {
     const { title, text } = req.body;
 
     if(req.body) {
         const newNote = {
             title,
             text,
-            note_id: uuid4(),
+            note_id: uuid(),
         };
 
+        //adding the note to the jsonfile
         readAndAppend(newNote, './db/db.json');
-
-        const response = {
-            status: 'success',
-            body: newNote,
-        };
 
         res.json(response);
     } else {
@@ -30,15 +28,15 @@ router.post('/', (req, res) => {
     }
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/notes/:id", async(req, res) => {
     const { id } = req.params;
-    const notes = JSON.parse(fs.readFileSync('./db/db.json', 'utf-8'));
+    const note = JSON.parse(await readFromFile('./db/db.json', 'utf-8'));
 
-    const noteIndex = notes.findIndex(note => note.note_id === id);
+    const notesIndex = note.findIndex(note => note.note_id === id);
 
-    notes.splice(noteIndex, 1);
+    note.splice(notesIndex, 1);
 
-    writeToFile("./db/db.json", notes);
+    await writeToFile("./db/db.json", note);
     return res.send();
 });
 
