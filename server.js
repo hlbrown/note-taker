@@ -5,7 +5,7 @@ const routes = require('./routes/mainRouter.js');
 
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3001;//connection for heroku
 
 
 // Middleware for urlencoded form data and parsing JSON and displaying all thats in public
